@@ -1,5 +1,12 @@
 [project]
 name = "notificationsystemmodule"
 version = "0.1.0"
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.12"
+dependencies = [
+    "python-dotenv",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: requires live SMTP credentials in .env (deselect with '-m not integration')",
+]

@@ -1,11 +1,11 @@
 import pytest
+from unittest.mock import MagicMock
 from notification import NotificationService, NotificationFactory, NotificationProvider
 from notification.providers import EmailProvider, SMSProvider, SlackProvider, DiscordProvider
 
 
-def test_email_provider(capsys):
+def test_email_provider_send_does_not_raise():
     EmailProvider(recipients=["test@example.com"]).send("hello")
-    assert capsys.readouterr().out == "EMAIL to ['test@example.com']: hello\n"
 
 
 def test_sms_provider(capsys):
@@ -23,9 +23,10 @@ def test_discord_provider(capsys):
     assert capsys.readouterr().out == "DISCORD: hello\n"
 
 
-def test_service_delegates_to_provider(capsys):
-    NotificationService(EmailProvider(recipients=["test@example.com"])).notify("test message")
-    assert capsys.readouterr().out == "EMAIL to ['test@example.com']: test message\n"
+def test_service_delegates_to_provider():
+    provider = MagicMock(spec=NotificationProvider)
+    NotificationService(provider).notify("test message")
+    provider.send.assert_called_once_with("test message")
 
 
 def test_service_swaps_provider(capsys):

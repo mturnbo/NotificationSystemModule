@@ -2,20 +2,6 @@ import pytest
 from unittest.mock import patch, MagicMock
 from notification.providers import EmailProvider
 
-SMTP_ENV = {
-    "SMTP_HOST": "smtp.testmail.app",
-    "SMTP_PORT": "587",
-    "SMTP_USER": "test-api-key",
-    "SMTP_PASSWORD": "test-api-key",
-    "SMTP_FROM": "ns.sender@inbox.testmail.app",
-}
-
-
-@pytest.fixture(autouse=True)
-def smtp_env(monkeypatch):
-    for key, value in SMTP_ENV.items():
-        monkeypatch.setenv(key, value)
-
 
 @pytest.fixture
 def mock_smtp():
