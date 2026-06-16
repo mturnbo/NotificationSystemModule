@@ -4,8 +4,8 @@ from notification.providers import EmailProvider, SMSProvider, SlackProvider, Di
 
 
 def test_email_provider(capsys):
-    EmailProvider().send("hello")
-    assert capsys.readouterr().out == "EMAIL: hello\n"
+    EmailProvider(recipients=["test@example.com"]).send("hello")
+    assert capsys.readouterr().out == "EMAIL to ['test@example.com']: hello\n"
 
 
 def test_sms_provider(capsys):
@@ -24,8 +24,8 @@ def test_discord_provider(capsys):
 
 
 def test_service_delegates_to_provider(capsys):
-    NotificationService(EmailProvider()).notify("test message")
-    assert capsys.readouterr().out == "EMAIL: test message\n"
+    NotificationService(EmailProvider(recipients=["test@example.com"])).notify("test message")
+    assert capsys.readouterr().out == "EMAIL to ['test@example.com']: test message\n"
 
 
 def test_service_swaps_provider(capsys):
@@ -33,18 +33,18 @@ def test_service_swaps_provider(capsys):
     assert capsys.readouterr().out == "SMS: test message\n"
 
 
-@pytest.mark.parametrize("key,cls", [
-    ("email", EmailProvider),
-    ("sms", SMSProvider),
-    ("slack", SlackProvider),
-    ("discord", DiscordProvider),
+@pytest.mark.parametrize("key,cls,kwargs", [
+    ("email", EmailProvider, {"recipients": ["test@example.com"]}),
+    ("sms", SMSProvider, {}),
+    ("slack", SlackProvider, {}),
+    ("discord", DiscordProvider, {}),
 ])
-def test_factory_returns_correct_type(key, cls):
-    assert isinstance(NotificationFactory.create(key), cls)
+def test_factory_returns_correct_type(key, cls, kwargs):
+    assert isinstance(NotificationFactory.create(key, **kwargs), cls)
 
 
 def test_factory_case_insensitive():
-    assert isinstance(NotificationFactory.create("EMAIL"), EmailProvider)
+    assert isinstance(NotificationFactory.create("EMAIL", recipients=["test@example.com"]), EmailProvider)
 
 
 def test_factory_unknown_provider():

@@ -3,7 +3,7 @@ from .providers import EmailProvider, SMSProvider, SlackProvider, DiscordProvide
 
 class NotificationFactory:
     @staticmethod
-    def create(provider_type: str):
+    def create(provider_type: str, **kwargs):
         providers = {
             "email": EmailProvider,
             "sms": SMSProvider,
@@ -13,4 +13,4 @@ class NotificationFactory:
         provider_class = providers.get(provider_type.lower())
         if not provider_class:
             raise ValueError(f"Unknown provider: {provider_type}")
-        return provider_class()
+        return provider_class(**kwargs)
