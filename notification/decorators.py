@@ -10,7 +10,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO,
     handlers=[
-        logging.StreamHandler(),                          # Print to console
+        logging.StreamHandler(),                            # Print to console
         logging.FileHandler(LOG_DIR / "notifications.log")  # Save to file
     ]
 )
