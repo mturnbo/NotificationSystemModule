@@ -37,3 +37,14 @@ def mock_smtp():
         mock.return_value.__enter__ = MagicMock(return_value=instance)
         mock.return_value.__exit__ = MagicMock(return_value=False)
         yield mock, instance
+
+
+@pytest.fixture(autouse=True)
+def mock_discord_post(request):
+    """Patch requests.post for all tests except integration tests."""
+    if request.node.get_closest_marker("integration"):
+        yield
+        return
+    with patch("notification.providers.discord.requests.post") as mock_post:
+        mock_post.return_value.raise_for_status = MagicMock()
+        yield mock_post

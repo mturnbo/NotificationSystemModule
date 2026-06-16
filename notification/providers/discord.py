@@ -1,5 +1,7 @@
 import re
 
+import requests
+
 from notification.base import NotificationProvider
 from notification.decorators import logged
 
@@ -18,5 +20,6 @@ class DiscordProvider(NotificationProvider):
 
     @logged
     def send(self, message: str) -> None:
-        # TODO: replace print with real API call
-        print(f"DISCORD to {self.recipients}: {message}")
+        for url in self.recipients:
+            response = requests.post(url, json={"content": message})
+            response.raise_for_status()
