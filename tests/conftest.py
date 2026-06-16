@@ -27,3 +27,13 @@ def mock_smtp_connection(request):
         mock_cls.return_value.__enter__ = MagicMock(return_value=instance)
         mock_cls.return_value.__exit__ = MagicMock(return_value=False)
         yield mock_cls
+
+
+@pytest.fixture
+def mock_smtp():
+    """Direct access to the patched SMTP class and connection instance."""
+    with patch("notification.providers.email.smtplib.SMTP") as mock:
+        instance = MagicMock()
+        mock.return_value.__enter__ = MagicMock(return_value=instance)
+        mock.return_value.__exit__ = MagicMock(return_value=False)
+        yield mock, instance
