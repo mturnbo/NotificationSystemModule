@@ -6,6 +6,7 @@ from notification.base import NotificationProvider
 from notification.decorators import logged
 
 WEBHOOK_PATTERN = re.compile(r"^https://discord(app)?\.com/api/webhooks/\d+/.+$")
+MAX_MESSAGE_LENGTH = 2000
 
 
 class DiscordProvider(NotificationProvider):
@@ -20,6 +21,8 @@ class DiscordProvider(NotificationProvider):
 
     @logged
     def send(self, message: str) -> None:
+        if len(message) > MAX_MESSAGE_LENGTH:
+            raise ValueError(f"Message exceeds Discord's {MAX_MESSAGE_LENGTH}-char limit")
         for url in self.recipients:
             response = requests.post(url, json={"content": message})
             response.raise_for_status()
