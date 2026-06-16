@@ -1,15 +1,5 @@
 import pytest
-from unittest.mock import patch, MagicMock
 from notification.providers import EmailProvider
-
-
-@pytest.fixture
-def mock_smtp():
-    with patch("notification.providers.email.smtplib.SMTP") as mock:
-        instance = MagicMock()
-        mock.return_value.__enter__ = MagicMock(return_value=instance)
-        mock.return_value.__exit__ = MagicMock(return_value=False)
-        yield mock, instance
 
 
 def test_send_connects_to_configured_host(mock_smtp):
