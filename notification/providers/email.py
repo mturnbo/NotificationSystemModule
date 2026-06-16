@@ -3,6 +3,7 @@ import re
 import smtplib
 from email.mime.text import MIMEText
 from notification.base import NotificationProvider
+from notification.decorators import logged
 
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
@@ -22,6 +23,7 @@ class EmailProvider(NotificationProvider):
             if not EMAIL_PATTERN.match(recipient):
                 raise ValueError(f"Invalid email address: {recipient}")
 
+    @logged
     def send(self, message: str) -> None:
         msg = MIMEText(message)
         msg["Subject"] = message.splitlines()[0]
