@@ -8,8 +8,16 @@ def test_logged_send_logs_attempt_and_success(caplog):
         SMSProvider().send("hello")
 
     messages = [r.message for r in caplog.records]
-    assert any("Sending via SMSProvider" in m and "hello" in m for m in messages)
+    assert any("Sending" in m and "SMSProvider" in m and "unknown" in m for m in messages)
     assert any("Sent successfully via SMSProvider" in m for m in messages)
+
+
+def test_logged_send_includes_recipients(caplog):
+    with caplog.at_level(logging.INFO, logger="notification"):
+        EmailProvider(recipients=["a@example.com", "b@example.com"]).send("hello")
+
+    messages = [r.message for r in caplog.records]
+    assert any("a@example.com" in m and "b@example.com" in m for m in messages)
 
 
 def test_logged_send_logs_failure_and_reraises(caplog, mock_smtp):
@@ -21,6 +29,6 @@ def test_logged_send_logs_failure_and_reraises(caplog, mock_smtp):
             EmailProvider(recipients=["a@example.com"]).send("hello")
 
     messages = [r.message for r in caplog.records]
-    assert any("Sending via EmailProvider" in m for m in messages)
+    assert any("Sending" in m and "EmailProvider" in m for m in messages)
     assert any("Failed to send via EmailProvider" in m for m in messages)
     assert not any("Sent successfully" in m for m in messages)
