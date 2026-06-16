@@ -56,3 +56,24 @@ def test_missing_env_var_raises(monkeypatch):
     monkeypatch.delenv("SMTP_HOST")
     with pytest.raises(KeyError):
         EmailProvider(recipients=["a@example.com"])
+
+
+@pytest.mark.parametrize("invalid_recipient", [
+    "not-an-email",
+    "missing-domain@",
+    "@missing-local.com",
+    "no-at-sign.com",
+    "spaces in@address.com",
+])
+def test_invalid_email_address_raises(invalid_recipient):
+    with pytest.raises(ValueError, match="Invalid email address"):
+        EmailProvider(recipients=[invalid_recipient])
+
+
+def test_invalid_email_among_valid_recipients_raises():
+    with pytest.raises(ValueError, match="Invalid email address"):
+        EmailProvider(recipients=["good@example.com", "not-an-email"])
+
+
+def test_valid_email_addresses_do_not_raise(mock_smtp):
+    EmailProvider(recipients=["a@example.com", "b.c@sub.example.co.uk"]).send("Hello")
