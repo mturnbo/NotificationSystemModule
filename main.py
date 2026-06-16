@@ -14,5 +14,10 @@ service = NotificationService(provider)
 service.notify("Deployment completed successfully.")
 
 # Step 6: Extensibility — Discord added without touching existing code
-discord_service = NotificationService(NotificationFactory.create("discord"))
+discord_service = NotificationService(
+    NotificationFactory.create(
+        "discord",
+        webhook_urls=["https://discord.com/api/webhooks/123456789/abcDEF"],
+    )
+)
 discord_service.notify("New PR opened for review.")
