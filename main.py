@@ -2,7 +2,7 @@ from notification import NotificationService, NotificationFactory
 from notification.providers import EmailProvider, SMSProvider
 
 # Step 4: Use Different Strategies — direct instantiation
-email_service = NotificationService(EmailProvider())
+email_service = NotificationService(EmailProvider(recipients=["user@example.com"]))
 email_service.notify("Your report is ready.")
 
 sms_service = NotificationService(SMSProvider())

@@ -48,3 +48,5 @@ yarn-error.log*
 ### Cache ###
 .eslintcache
 __pycache__/
+*.pyc
+.pytest_cache/
