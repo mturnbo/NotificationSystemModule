@@ -1,7 +1,5 @@
 import re
-
 import requests
-
 from notification.base import NotificationProvider
 from notification.decorators import logged
 

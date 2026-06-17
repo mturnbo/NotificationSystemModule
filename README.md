@@ -1,4 +1,4 @@
-# NotificationSystemModule
+# Notification System Module
 
 Companion code for the Medium article **"Building An Extensible System in Python"** — part of a series on object-oriented design.
 
