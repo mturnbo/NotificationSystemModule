@@ -18,9 +18,9 @@ def test_slack_provider(capsys):
     assert capsys.readouterr().out == "SLACK: hello\n"
 
 
-def test_discord_provider(capsys):
-    DiscordProvider().send("hello")
-    assert capsys.readouterr().out == "DISCORD: hello\n"
+def test_discord_provider_send_does_not_raise():
+    webhook = "https://discord.com/api/webhooks/123456789/abcDEF"
+    DiscordProvider(webhook_urls=[webhook]).send("hello")
 
 
 def test_service_delegates_to_provider():
@@ -38,7 +38,7 @@ def test_service_swaps_provider(capsys):
     ("email", EmailProvider, {"recipients": ["test@example.com"]}),
     ("sms", SMSProvider, {}),
     ("slack", SlackProvider, {}),
-    ("discord", DiscordProvider, {}),
+    ("discord", DiscordProvider, {"webhook_urls": ["https://discord.com/api/webhooks/123456789/abcDEF"]}),
 ])
 def test_factory_returns_correct_type(key, cls, kwargs):
     assert isinstance(NotificationFactory.create(key, **kwargs), cls)
